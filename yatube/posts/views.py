@@ -40,13 +40,10 @@ def profile(request, username):
     author = get_object_or_404(User, username=username)
     posts = author.posts.all()
     page_obj = paginator(request, posts)
-    if request.user.is_authenticated:
-        following = Follow.objects.filter(
-            user=request.user,
-            author=author
-        ).exists()
-    else:
-        following = False
+    following = (
+        request.user.is_authenticated and
+        Follow.objects.filter(user=request.user, author=author).exists()
+    ) 
     context = {
         'author': author,
         'page_obj': page_obj,
@@ -56,7 +53,7 @@ def profile(request, username):
 
 
 def post_detail(request, post_id):
-    form = CommentForm(request.POST or None)
+    form = CommentForm()
     post = get_object_or_404(Post, pk=post_id)
     context = {
         'post': post,
@@ -69,7 +66,9 @@ def post_detail(request, post_id):
 @login_required
 def post_create(request):
     if request.method == "POST":
-        form = PostForm(request.POST)
+        form = PostForm(request.POST,
+                        files=request.FILES or None,
+                        )
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user

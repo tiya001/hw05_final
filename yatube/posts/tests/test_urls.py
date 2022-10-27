@@ -84,3 +84,18 @@ class PostURLTests(TestCase):
         )
         self.assertRedirects(response,
                              f'/auth/login/?next=/posts/{self.post.pk}/edit/')
+
+    def test_guest_index_follow_redirect(self):
+        response = self.guest_client.get('/follow/')
+        self.assertRedirects(response,
+                             '/auth/login/?next=/follow/')
+
+    def test_guest_follow_redirect(self):
+        response = self.guest_client.get(f'/profile/{self.user}/follow/')
+        self.assertRedirects(response,
+                             f'/auth/login/?next=/profile/{self.user}/follow/')
+
+    def test_guest_unfollow_redirect(self):
+        response = self.guest_client.get(f'/profile/{self.user}/unfollow/')
+        self.assertRedirects(response,
+                             f'/auth/login/?next=/profile/{self.user}/unfollow/')

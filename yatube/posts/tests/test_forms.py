@@ -88,13 +88,9 @@ class PostFormsTest(TestCase):
         self.assertTrue(
             Post.objects.filter(
                 author=PostFormsTest.user,
-                text='Тестовый пост из формы',
+                text=PostFormsTest.post.text,
                 group=PostFormsTest.group.id,
-            ).exists()
-        )
-        self.assertTrue(
-            Post.objects.filter(
-                image='posts/small.jpg'
+                image=PostFormsTest.post.image
             ).exists()
         )
 

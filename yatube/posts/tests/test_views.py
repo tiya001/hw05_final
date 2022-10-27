@@ -76,6 +76,8 @@ class PostViewsTests(TestCase):
 
     def test_auth_unfollow(self):
         '''Авторизованный пользователь может отписываться'''
+        Follow.objects.create(user=self.user,
+                              author=self.post.author)
         self.authorized_client.get(
             reverse('posts:profile_unfollow',
                     kwargs={'username': self.post.author})
@@ -91,11 +93,11 @@ class PostViewsTests(TestCase):
         '''Новый пост появляется в ленте тех, кто подписан'''
         Follow.objects.create(user=self.user,
                               author=self.post.author)
+        new_post = Post.objects.create(author=self.post.author,
+                                       text='пост после подписки')
         index = self.authorized_client.get(
             reverse('posts:follow_index')
         )
-        new_post = Post.objects.create(author=self.post.author,
-                                       text='пост после подписки')
         self.assertIn(new_post, index.context['posts'])
 
     def test_new_post_for_non_follower(self):
@@ -191,10 +193,12 @@ class PostViewsTests(TestCase):
         post_group_0 = first_object.group
         post_id_0 = first_object.id
         post_image_0 = first_object.image
+        post_comments_0 = first_object.comments
         self.assertEqual(post_text_0, f'Тестовый пост {first_object.pk}')
         self.assertEqual(post_group_0, self.post.group)
         self.assertEqual(post_id_0, self.post.id)
         self.assertEqual(post_image_0, self.post.image)
+        self.assertEqual(post_comments_0, self.post.comments)
 
     def test_create_post_show_correct_context(self):
         """Шаблон create_post сформирован с правильным контекстом."""
@@ -248,12 +252,12 @@ class PostViewsTests(TestCase):
             group=self.group
         )
         count_posts = Post.objects.count()
-
         self.authorized_client.get(reverse('posts:index'))
         self.assertEqual(count_posts, 14)
         test_post.delete()
+        self.authorized_client.get(reverse('posts:index'))
+        self.assertEqual(count_posts, 14)
         cache.clear()
-
         count_posts = Post.objects.count()
         self.assertEqual(count_posts, 13)
 
