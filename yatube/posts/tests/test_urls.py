@@ -97,5 +97,7 @@ class PostURLTests(TestCase):
 
     def test_guest_unfollow_redirect(self):
         response = self.guest_client.get(f'/profile/{self.user}/unfollow/')
-        self.assertRedirects(response,
-                             f'/auth/login/?next=/profile/{self.user}/unfollow/')
+        self.assertRedirects(
+            response,
+            f'/auth/login/?next=/profile/{self.user}/unfollow/'
+        )
