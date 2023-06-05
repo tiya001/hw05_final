@@ -1,3 +1,5 @@
-# hw05_final
+<h2>Социальная сеть Yatube</h2>
+<h3>Сайт для публикаций постов с возможностью подписок и комментариями</h3>
 
-[![CI](https://github.com/yandex-praktikum/hw05_final/actions/workflows/python-app.yml/badge.svg?branch=master)](https://github.com/yandex-praktikum/hw05_final/actions/workflows/python-app.yml)
+## Технологии
+[![My Skills](https://skillicons.dev/icons?i=python,git,css,bootstrap,github&theme=light)](https://skillicons.dev)
